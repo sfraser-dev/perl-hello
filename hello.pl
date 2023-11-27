@@ -141,7 +141,7 @@ say "arr5: " . join " ", @arr5;
 say "arr6: " . join " ", @arr6;
 say "";
 
-# taking an array in scalar context gives the length of the array
+# array to scalar context gives size / length
 my $lenArr2 = @arr2;
 say "array to scalar: length of \@arr2 = " . $lenArr2;
 
@@ -218,10 +218,72 @@ while ( my ( $k, $v ) = each %dic2 ) {
     push @print_temp, "$k=>$v, ";
 }
 say "\%dic2 = " . join " ", @print_temp;
+say join " ",               @dic2{ 'c', 'e' };
+say join " ",               @dic2{ 'c' .. 'e' };
 
-# say '$dic2{$a,$b} = ' .
-say join " ", @dic2{ 'c', 'e' };
-say join " ", @dic2{ 'c'.. 'e' };
+# get keys and values from dictionary / hash
+my @arr13 = keys %dic2;
+say "arr13 = " . join " ", @arr13;
+my @arr14 = values %dic2;
+say "arr14 = " . join " ", @arr14;
 
-# creat:arrayList=(), access: $arrayList[], split pick @arrayList[2,5], split range: @arrayList[2..5]
-# creat:dicHash=(), access: $dicHash{}, split pick @dicHash{2,5}, split range @dicHash{2..5}
+# dict to scalar context give size / length
+say "length of dic2 = " . ( keys %dic2 );
+my $key_exists = exists $dic2{"b"} ? "true" : "false";
+say "\$dic2 key 'b' exists? " . $key_exists;
+
+# exists for dictionaries / hashes
+$key_exists = exists $dic2{"z"} ? "true" : "false";
+say "\$dic2 key 'z' exists? " . $key_exists;
+
+# delete for dictionaries / hashes
+delete $dic2{'b'};
+@print_temp = ();
+while ( my ( $k, $v ) = each %dic2 ) {
+    push @print_temp, "$k=>$v, ";
+}
+say "\%dic2 = " . join " ", @print_temp;
+say "";
+
+# references
+my $num2  = 32;
+my @arr15 = ( 100, 101, 102 );
+my %dic3  = ( 'a' => 500, 'b' => 600, 'c' => 700 );
+
+# dump values (prints only the values)
+say Dumper ($num2);
+say Dumper (@arr15);
+say Dumper (%dic3);
+say "";
+
+# dump references to screen
+say Dumper ( \$num2 );
+say Dumper ( \@arr15 );
+say Dumper ( \%dic3 );
+# creating references based on dumper output to screen above
+my $num_ref = \32;
+my $arr_ref = [ 201, 202, 203 ];
+my $dic_ref = {
+    a => 5001,
+    b => 5002,
+    c => 5003
+};
+say Dumper($$num_ref);      # dereference scaler ref
+say Dumper($arr_ref->[0]);  # dereference element of array
+say Dumper($arr_ref->@*);   # dereference whole of array
+say Dumper($dic_ref->{a});  # dereference element of dictionary
+say Dumper($dic_ref->%* );  # dereference whole of dictionary
+
+1H05m
+
+# ME
+# -- array / list
+# create:arrayList=()
+# access: $arrayList[]
+# split pick @arrayList[2,5]
+# split range: @arrayList[2..5]
+# -- dictionary / hash
+# create:dicHash=()
+# access: $dicHash{}
+# split pick @dicHash{2,5}
+# split range @dicHash{2..5}
