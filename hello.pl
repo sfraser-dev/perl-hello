@@ -144,9 +144,11 @@ say "";
 # array to scalar context gives size / length
 my $lenArr2 = @arr2;
 say "array to scalar: length of \@arr2 = " . $lenArr2;
+say "";
 
-# print in uppercase only if 2 > 1
+# print in uppercase with tailend if statement
 say uc "im getting changed to uppercase init" if 2 > 1;
+say lc "IM GETTING CHANGED TO LOWERCASE INIT" if 1;
 say "";
 
 # index -1 of array, array length and get last element of array
@@ -260,6 +262,7 @@ say "";
 say Dumper ( \$num2 );
 say Dumper ( \@arr15 );
 say Dumper ( \%dic3 );
+
 # creating references based on dumper output to screen above
 my $num_ref = \32;
 my $arr_ref = [ 201, 202, 203 ];
@@ -268,13 +271,11 @@ my $dic_ref = {
     b => 5002,
     c => 5003
 };
-say Dumper($$num_ref);      # dereference scaler ref
-say Dumper($arr_ref->[0]);  # dereference element of array
-say Dumper($arr_ref->@*);   # dereference whole of array
-say Dumper($dic_ref->{a});  # dereference element of dictionary
-say Dumper($dic_ref->%* );  # dereference whole of dictionary
-
-1H05m
+say Dumper($$num_ref);          # dereference scaler ref
+say Dumper( $arr_ref->[0] );    # dereference element of array
+say Dumper( $arr_ref->@* );     # dereference whole of array
+say Dumper( $dic_ref->{a} );    # dereference element of dictionary
+say Dumper( $dic_ref->%* );     # dereference whole of dictionary
 
 # ME
 # -- array / list
