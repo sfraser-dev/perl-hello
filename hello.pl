@@ -308,14 +308,14 @@ say Dumper( $dic_ref->%* );     # dereference whole of dictionary
 
 # ME
 # -- array / list
-# create: @arrayList=()
+# create: @arrayList=()             -> array syntax             
 # access: $arrayList[]
-# create: $referenceArrayList=[]
+# create: $referenceArrayList=[]    -> array ref syntax
 # access: $referenceArrayList->[]
 # -- dictionary / hash
-# create: %dicHash=()
+# create: %dicHash=()               -> hash syntax
 # access: $dicHash{}
-# create: $referenceDicHash={}
+# create: $referenceDicHash={}      -> hash ref syntax
 # access: $referenceDicHash->{}
 
 # creating multi layered references (hash ref with a hash ref with an array ref with a hash ref)
@@ -392,4 +392,4 @@ slurpy_catchall("John", 1, 2, {f=>"tea", g=>"coffee", h=>"sprite"});
 # final expression is returned
 1
 
-1h30 done
+### 1h38:40 done
