@@ -11,6 +11,7 @@ use Data::Dumper;
 # signatures for subroutines (became non-experimental in perl 5.36)
 use feature qw <signatures>;
 
+# STRING BASICS
 # strings: qq{""} are interpolated, q{''} are literals
 my $num1 = 7;
 my $str1 = "Interpreted Double Quotes: Hello, World. The number is $num1!";
@@ -22,6 +23,7 @@ say $str2;
 say $str_literal;
 say "";
 
+# USER INPUT
 # readline (<>) user input continuously from terminal. print it out ($_) in upper case (uc)
 # while (<>) {.
 #     say uc "$_";
@@ -40,6 +42,7 @@ say "";
 my $str3 = "wee string";
 say Dumper $num1, $str3;
 
+# ARRAYS
 # array and list are used interchangeably in perl
 # array is the variable (arr1)
 # list is the data (22, "hello", 1.22)
@@ -53,7 +56,7 @@ say( 'length of @arr1 is: ' . $arr1_length );
 say "access \$arr[2] as a scalar: $arr1[2]";
 say "";
 
-# qw quote word
+# QW QUOTE WORD, QQ DOUBLE QUOTES, Q SINGLE QUOTES
 # returns array / list splitting on whitespace & wrapping in 'single quotes'
 # a quick way to specify a lot of little single-quoted words without the quotes
 # splits into array / list on whitespace
@@ -80,7 +83,7 @@ my $str6 = qq/this is a double quoted sentence, no split with q or qq/;
 say $str6;
 say "";
 
-# pass by value pass by reference to sub
+# PASS BY VALUE PASS BY REFERENCE TO SUB
 my @arr2 = ( 1, 2, 3, 4, 5 );
 my @arr3 = ( 1 .. 5 );
 my @arr4 = ( 1 .. 5 );
@@ -152,6 +155,7 @@ say "arr5: " . join " ", @arr5;
 say "arr6: " . join " ", @arr6;
 say "";
 
+# ARRAYS / LISTS
 # array to scalar context gives size / length
 my $lenArr2 = @arr2;
 say "array to scalar: length of \@arr2 = " . $lenArr2;
@@ -187,6 +191,7 @@ say join " ", ( @arr7[ 0 .. 2 ] );
 # split pick two values: %dicHash{2,5}
 # split into range: %dicHash{2..5}
 
+# DICTIONARIES / HASHES
 # create a dictionary
 my %dic0 = ( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5, );
 
@@ -199,7 +204,7 @@ say Dumper @dic0{ 'a', 'b' };
 say Dumper @dic0{ 'b' .. 'd' };
 say "";
 
-# push, pop, shift, unshift array
+# PUSH, POP, SHIFT, UNSHIFT ARRAY
 my @arr8 = ( 101, 102, 103, 104, 105 );
 say "arr8 = " . join " ", @arr8;
 push @arr8, 1006;
@@ -212,20 +217,23 @@ shift @arr8;
 say "shift \@arr8 = " . join " ", @arr8;
 say "";
 
-# sorting (perl sorts alphabetically by default, like JS)
+# SORTING
+# sorting (perl sorts ALPHABETICALLY by default, like JS)
 my @arr9 = qw/h d e k t s/;
 say "\@arr9 = " . join " ", @arr9;
 my @arr10 = sort @arr9;
 say "\@arr10 = " . join " ", @arr10;
+
 my @arr11 = ( 4, 7, 8, 2, 3, 11 );
 say "\@arr11 = " . join " ", @arr11;
 
-# use spaceship to sort numbers
+# use block and spaceship to sort NUMBERS (since sort defaults to alphanumeric sorting)
 my @arr12 = sort { $a <=> $b } @arr11;
 say "\@arr12 = " . join " ", @arr12;
 say "";
 
-# hashes (dictionaries), unordered in perl, keys are unique
+# DICTIONARIES / HASHES
+# unordered in perl, keys are unique
 my %dic1       = ( a => 1, b => 2, "c" => 3, "my-key" => 'My&VaLu3' );
 my @print_temp = ();
 while ( my ( $k, $v ) = each %dic1 ) {
@@ -275,7 +283,7 @@ while ( my ( $k, $v ) = each %dic2 ) {
 say "\%dic2 = " . join " ", @print_temp;
 say "";
 
-# references
+# REFERENCES / POINTERS
 my $num2  = 32;
 my @arr15 = ( 100, 101, 102 );
 my %dic3  = ( 'a' => 500, 'b' => 600, 'c' => 700 );
@@ -305,7 +313,6 @@ say Dumper( $arr_ref->@* );     # dereference whole of array
 say Dumper( $dic_ref->{a} );    # dereference element of dictionary
 say Dumper( $dic_ref->%* );     # dereference whole of dictionary
 
-# ME
 # -- array / list
 # create: @arrayList=()             -> array syntax
 # access: $arrayList[]
@@ -389,7 +396,127 @@ sub slurpy_catchall ( $name, @slurp ) {
 }
 slurpy_catchall( "John", 1, 2, { f => "tea", g => "coffee", h => "sprite" } );
 
-# capturing matched regexes
+# ERROR HANDLING
+# perl's out of the box solution using eval and die better solutions using
+# Try::Tiny::SmartCatch or Exception::Class eval (try), or do (catch)
+# and die (throws exception stored in special var $@).
+sub pop_clogs {
+    warn qq @warn: call an ambulance, I'm ill@;
+
+    # die returns 0 (falsey)
+    die qq ^I told you I was ill^;
+}
+eval {
+    # die from function (return 0) or return 1
+    my $ret = pop_clogs();
+    1;
+} or do {
+    my $err = $@ || "that didn't end well";
+    say qq{error: $err};
+};
+say($!);
+
+# TRUTHY / FALSEY
+my $test_val = 1;
+say $test_val ? "$test_val is true" : "$test_val is false";
+$test_val = 0;
+say $test_val ? "$test_val is true" : "$test_val is false";
+$test_val = '1';
+say $test_val ? "'$test_val' is true" : "'$test_val' is false";
+$test_val = '0';    # oddity. string value "0" is falsey in perl
+say $test_val ? "'$test_val' is true" : "'$test_val' is false";
+
+# OPERATORS
+# spaceship (3 way operator, returns 1, 0 or -1)
+# left biggest = 1
+# equal = 0
+# right biggest -1
+my $ufo = -5;
+say $ufo <=> -53;
+
+# strings use eq, ne, ne, gt, lt, ge, le for comparisons
+my $str7 = "a";
+my $str8 = "b";
+print("$str7 eq $str8 = ");
+say( 0 + ( $str7 eq $str8 ) );
+print("$str7 ne $str8 = ");
+say( 0 + ( $str7 ne $str8 ) );
+print("$str7 gt $str8 = ");
+say( 0 + ( $str7 gt $str8 ) );
+print("$str7 lt $str8 = ");
+say( 0 + ( $str7 lt $str8 ) );
+print("$str7 ge $str8 = ");
+say( 0 + ( $str7 ge $str8 ) );
+print("$str7 le $str8 = ");
+say( 0 + ( $str7 le $str8 ) );
+
+# copy string using x ('multiplication' operator on strings)
+say( "h " x 6 );
+say "";
+
+# CONTROL FLOW
+unless ( 0 > 1 ) {
+    say "unless means 'if not true': 0 > 1";
+}
+if ( !0 ) {
+    say "if not true: !0";
+}
+my $num3 = 0;
+
+# unless is INVERSE if statement
+$num3 = 3 unless 1 > 2;
+say("num3 = $num3");
+
+my $if_val = 5;
+if ( $if_val < 2 ) {
+    say "if statement: if";
+}
+elsif ( $if_val == 5 ) {
+    say "if statement: elsif";
+}
+else {
+    say "if statement: else";
+}
+say "";
+
+my $num4 = 3;
+say "while loop";
+while ( $num4 > 0 ) {
+    say $num4--;
+}
+say "";
+
+say "---for loop bare";
+my @arr17 = ( "hi", "bye", "ciao", "bonjour", "hola", 6 .. 10 );
+for (@arr17) {
+    print "$_\n";
+}
+
+say "---foreach loop bare";
+foreach (@arr17) {
+    print "$_\n";
+}
+
+say "---for loop indexing";
+for my $element (@arr17) {
+    print "$element\n";
+}
+
+say "---for loop C-style";
+for ( my $i = 0 ; $i < ( 0 + @arr17 ) ; ++$i ) {
+    print "$arr17[$i]\n";
+}
+say "";
+
+# next = continue in other languages
+# last = break in other loops
+# redo = no equivalent in other languages (redo current iteration)
+# goto keyword. LOOP1: location. goto LOOP1;
+
+# REGEX
+# Very easy to use regex in perl, baked into the language, not an additional library
+# =~ check for regex match
+# !~ check for not regex match
 my $test_text = "This is the first sentence. Red lorry. There are 2 dogs.";
 
 # capture one (match) by if statement
@@ -425,35 +552,7 @@ my (@pattern_capture_array2) =
   $test_text =~ m/(\Bentenc\B).*(\bRed\b).*(\d\sdo[cg]s)/gi;
 say "pattern_capture_array2 = " . join ", ", @pattern_capture_array2;
 
-# error handling. perl's out of the box solution using eval and die
-# better solutions using Try::Tiny::SmartCatch or Exception::Class
-# eval (try), or do (catch) and die (throws exception stored in special var $@).
-sub pop_clogs {
-    warn qq @warn: call an ambulance, I'm ill@;
-    # die returns 0 (falsey)
-    die qq ^I told you I was ill^;
-}
-eval {
-    # die from function (return 0) or return 1
-    my $ret = pop_clogs();
-    1
-} or do {
-    my $err = $@ || "that didn't end well";
-    say qq{error: $err};
-};
-say($!);
-
-# truthy / falsey
-my $test_val = 1;
-say $test_val ? "$test_val is true" : "$test_val is false";
-$test_val = 0;
-say $test_val ? "$test_val is true" : "$test_val is false";
-$test_val = '1';
-say $test_val ? "'$test_val' is true" : "'$test_val' is false";
-$test_val = '0';    # oddity. string value "0" is falsey in perl
-say $test_val ? "'$test_val' is true" : "'$test_val' is false";
-
 # final expression
 1;
 
-### 1h46m done
+### 2h18m done
