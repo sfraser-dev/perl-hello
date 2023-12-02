@@ -3,16 +3,15 @@
 
 use warnings;
 use strict;
-use feature qw(say);
+use feature qw /say/;
 
 # debugging
 use Data::Dumper;
 
-# signatures for subs (became non-experimental in perl 5.36)
-use feature qw(signatures);
+# signatures for subroutines (became non-experimental in perl 5.36)
+use feature qw <signatures>;
 
-##### Main
-# string literal
+# strings: qq{""} are interpolated, q{''} are literals
 my $num1 = 7;
 my $str1 = "Interpreted Double Quotes: Hello, World. The number is $num1!";
 my $str2 =
@@ -308,7 +307,7 @@ say Dumper( $dic_ref->%* );     # dereference whole of dictionary
 
 # ME
 # -- array / list
-# create: @arrayList=()             -> array syntax             
+# create: @arrayList=()             -> array syntax
 # access: $arrayList[]
 # create: $referenceArrayList=[]    -> array ref syntax
 # access: $referenceArrayList->[]
@@ -375,21 +374,86 @@ say join " ", @arr16;
 say "";
 
 # sub with parameters. set to default of undefined
-sub my_params ($name = "Default Name") {
+sub my_params ( $name = "Default Name" ) {
     say "hello " . $name;
 }
 my_params("Joe Bloggs");
 my_params();
-say"";
+say "";
 
-sub slurpy_catchall($name, @slurp) {
+sub slurpy_catchall ( $name, @slurp ) {
     say $name;
+
     # dumper print the reference declaration
     say Dumper \@slurp;
 }
-slurpy_catchall("John", 1, 2, {f=>"tea", g=>"coffee", h=>"sprite"});
+slurpy_catchall( "John", 1, 2, { f => "tea", g => "coffee", h => "sprite" } );
 
-# final expression is returned
-1
+# capturing matched regexes
+my $test_text = "This is the first sentence. Red lorry. There are 2 dogs.";
 
-### 1h38:40 done
+# capture one (match) by if statement
+my $pattern_capture_match1_a = $1 if ( $test_text =~ m/(\sRed\s\w{5})/ );
+say( "pattern_capture_match1_a = " . $pattern_capture_match1_a );
+
+# capture one (match) by destructuring / unpacking
+my ($pattern_capture_match1_b) = $test_text =~ m/(\w{8}\.\sRed\s\w{5})/;
+say( "pattern_capture_match1_b = " . $pattern_capture_match1_b );
+
+# capture two (matches) by destructuring (using a single "my" to declare two variables)
+my ( $pattern_capture_match2_a, $pattern_capture_match2_b ) =
+  $test_text =~ m/(\sRed\s\w{5})\.(\sThere)/;
+say( "pattern_capture_match2_a = " . $pattern_capture_match2_a );
+say( "pattern_capture_match2_b = " . $pattern_capture_match2_b );
+
+# capture three (matches) by if statement and destructuring
+if ( $test_text =~ m/(This\s).*(\sRed\s\w{5})\.(\sThere)/ ) {
+    my ( $pattern_capture_match3_a, $pattern_capture_match3_b,
+        $pattern_capture_match3_c )
+      = ( $1, $2, $3 );
+    say( "pattern_capture_match3_a= " . $pattern_capture_match3_a );
+    say( "pattern_capture_match3_b= " . $pattern_capture_match3_b );
+    say( "pattern_capture_match3_c= " . $pattern_capture_match3_c );
+}
+
+# capture all matches into an array by destructuring (globally match 'The', case insensitive)
+my (@pattern_capture_array1) = $test_text =~ m/The/gi;
+say "pattern_capture_array1 = " . join ", ", @pattern_capture_array1;
+
+# capture all matches into an array by destructuring (with word boundaries, character set, etc)
+my (@pattern_capture_array2) =
+  $test_text =~ m/(\Bentenc\B).*(\bRed\b).*(\d\sdo[cg]s)/gi;
+say "pattern_capture_array2 = " . join ", ", @pattern_capture_array2;
+
+# error handling. perl's out of the box solution using eval and die
+# better solutions using Try::Tiny::SmartCatch or Exception::Class
+# eval (try), or do (catch) and die (throws exception stored in special var $@).
+sub pop_clogs {
+    warn qq @warn: call an ambulance, I'm ill@;
+    # die returns 0 (falsey)
+    die qq ^I told you I was ill^;
+}
+eval {
+    # die from function (return 0) or return 1
+    my $ret = pop_clogs();
+    1
+} or do {
+    my $err = $@ || "that didn't end well";
+    say qq{error: $err};
+};
+say($!);
+
+# truthy / falsey
+my $test_val = 1;
+say $test_val ? "$test_val is true" : "$test_val is false";
+$test_val = 0;
+say $test_val ? "$test_val is true" : "$test_val is false";
+$test_val = '1';
+say $test_val ? "'$test_val' is true" : "'$test_val' is false";
+$test_val = '0';    # oddity. string value "0" is falsey in perl
+say $test_val ? "'$test_val' is true" : "'$test_val' is false";
+
+# final expression
+1;
+
+### 1h46m done
