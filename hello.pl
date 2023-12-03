@@ -56,18 +56,28 @@ say( 'length of @arr1 is: ' . $arr1_length );
 say "access \$arr[2] as a scalar: $arr1[2]";
 say "";
 
-# QW QUOTE WORD, QQ DOUBLE QUOTES, Q SINGLE QUOTES
+# QUOTATION OPERATORS
+# q 'single quotes', qq "double quotes", qx `system quote`, qw word quote, qr regex quote, 
 # returns array / list splitting on whitespace & wrapping in 'single quotes'
 # a quick way to specify a lot of little single-quoted words without the quotes
 # splits into array / list on whitespace
+# delimiters q, qq, qx, qw, qr: open close delimiters have to be: (), [], {} or <>
+# delimiters q, qq, qx, qw, qr: other delimiters have to be the same:
+# //, \\, !!, ||, .., ~~, $$, ,,, ??, ``, '', "", ;;, ::, ==, ++, --, **, %%, && or ^^
 my @qw1 = qw (101 202 303 parenthesisDelimiters);
 say Dumper @qw1;
 say $qw1[1];
 say "";
-my @qw2 = qw [1001 exclamationDelimiters       3333];
+my @qw2 = qw [1001 squareBracketDelimiters       3333];
+say Dumper @qw2;
+@qw2 = qw < free code camp >;
+say Dumper @qw2;
+@qw2 = qw { radio free europe };
 say Dumper @qw2;
 my @qw3 = qw / fwdSlashDelimiters 999      xxrr/;
 say Dumper @qw3;
+say join ": ", qw /Hello Number 1/;
+say "";
 
 # q 'single' quotes and qq "double" quotes
 # there are four open / close delimiters for 'q' and "qq"
@@ -81,7 +91,6 @@ say $str5;
 # no split into array / list with q and qq as there is with qw
 my $str6 = qq/this is a double quoted sentence, no split with q or qq/;
 say $str6;
-say "";
 
 # PASS BY VALUE PASS BY REFERENCE TO SUB
 my @arr2 = ( 1, 2, 3, 4, 5 );
@@ -551,8 +560,41 @@ say "pattern_capture_array1 = " . join ", ", @pattern_capture_array1;
 my (@pattern_capture_array2) =
   $test_text =~ m/(\Bentenc\B).*(\bRed\b).*(\d\sdo[cg]s)/gi;
 say "pattern_capture_array2 = " . join ", ", @pattern_capture_array2;
+say "";
+
+# qr/STRING/ quotes its string to a regex (put regex into a variable)
+$test_text = "Hello there. Another test sentence. I wish my car is a Porsche";
+my $my_regex = qr/Ello.*por.{4}$/i;
+say $test_text =~ $my_regex ? "\$my_regex matches" : "\$my_regex no match";
+say "";
+
+# print first two alphanumerics from each word in the array (list). minimalist TIMTOWTDI perl code
+my @a = qw ? dog rat cat ?;
+my $r = qr *^(\w{2})*;
+foreach (@a) {
+    say "$_ $1" unless $_ !~ $r;
+}
+say "";
+
+# qr doesn't like full substitution regex, so do it piece by piece using array. minimalist TIMTOWTDI perl code
+my @w = qw . og OG .;
+foreach (@a) {
+
+    # substitute without changing original $_ using /r modifier
+    my $s1 = $_ =~ s/($w[0])/$w[1]/r;
+
+    # substitute without changing original $_ via destructuring into new variable
+    ( my $s2 = $_ ) =~ s/($w[0])/$w[1]/;
+    say "$_ $s1 $s2";
+}
+
+# qx call `system command``
+my $cmd = qx(dir);
+say $cmd;
+
+
 
 # final expression
 1;
 
-### 2h18m done
+### 2h29m done (built in functions next)

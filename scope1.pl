@@ -5,7 +5,7 @@ use feature qw/ state /;
 
 require "./scope2.pl";
 
-# like "extern"
+# "our" is like "extern"
 our ( $globby );
 
 say $globby;
