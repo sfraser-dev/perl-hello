@@ -1,3 +1,5 @@
+# review of FCC Perl Programming Course 4h10m given by Youtube user PerlTechStack
+
 # if straberry perl installed (and in path), don't include the shebang (#!/usr/local/bin/perl -w)
 # Surpress 5.8.0 warning: Powershell as admin: [Environment]::SetEnvironmentVariable("LC_ALL", "C")
 
