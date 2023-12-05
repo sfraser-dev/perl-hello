@@ -59,7 +59,7 @@ say "access \$arr[2] as a scalar: $arr1[2]";
 say "";
 
 # QUOTATION OPERATORS
-# q 'single quotes', qq "double quotes", qx `system quote`, qw word quote, qr regex quote, 
+# q 'single quotes', qq "double quotes", qx `system quote`, qw word quote, qr regex quote,
 # returns array / list splitting on whitespace & wrapping in 'single quotes'
 # a quick way to specify a lot of little single-quoted words without the quotes
 # splits into array / list on whitespace
@@ -585,7 +585,7 @@ foreach (@a) {
     # substitute without changing original $_ using /r modifier
     my $s1 = $_ =~ s/($w[0])/$w[1]/r;
 
-    # substitute without changing original $_ via destructuring into new variable
+   # substitute without changing original $_ via destructuring into new variable
     ( my $s2 = $_ ) =~ s/($w[0])/$w[1]/;
     say "$_ $s1 $s2";
 }
@@ -594,7 +594,53 @@ foreach (@a) {
 my $cmd = qx(dir);
 say $cmd;
 
+# dumping of normal collection and dumping of a reference to a collection
+say ("dumping normal hash");
+my %hashy = ( "a" => "hey", b => "boy", 'c' => { d => "superstar", e => "dj" } );
+say Dumper(%hashy);
+# dumper shows six variables:
+# $VAR1 ='a';
+# $VAR2 = 'hey';
+# $VAR3 = 'b';
+# $VAR4 = "boy";
+# $VAR5 = 'c';
+# $VAR6 = {
+#       'x' => 'superstar',
+#       'd' => 'dj'
+# };
 
+# dumper shows one variable (the reference / pointer):
+say ("dumping reference to the hash");
+say Dumper( \%hashy );
+# $VAR1 = {
+#           'a' => 'hey',
+#           'b' => 'boy',
+#           'c' => {
+#                    'x' => 'superstar',
+#                    'd' => 'dj'
+#                  }
+#         };
+
+# use the single variable hash syntax from dumper to construct a hash pointer
+my $emergency_addr= {
+    w => "fireman",
+    x => "policeman",
+    y => "doctor",
+};
+say ("hand-constructing emergency hash with an address scalar (ref / pointer)");
+say ($emergency_addr);
+hash_doggify($emergency_addr);
+say ("dumping doggified emergency hash address scalar");
+say Dumper ($emergency_addr);
+sub hash_doggify {
+    my $h_ptr = shift @_;
+    $h_ptr->{"w"} .= " woof woof";
+    $h_ptr->{x}   .= " woof woof";
+    $h_ptr->{'y'} .= " grrrrr";
+    return $h_ptr;
+}
+say ("dumping doggified emergency hash address via full dereferencing ->%*");
+say Dumper ($emergency_addr->%*);
 
 # final expression
 1;
