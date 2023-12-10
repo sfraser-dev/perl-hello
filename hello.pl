@@ -1,11 +1,22 @@
-# review of FCC Perl Programming Course 4h10m given by Youtube user PerlTechStack
+# review of FCC Perl Programming Course 4h10m given by Youtube user @PerlTechStack (Valters Krupskis)
 
 # if straberry perl installed (and in path), don't include the shebang (#!/usr/local/bin/perl -w)
 # Surpress 5.8.0 warning: Powershell as admin: [Environment]::SetEnvironmentVariable("LC_ALL", "C")
 
+# powershell warning fix: $env:LC_ALL='C'
+
 use warnings;
 use strict;
 use feature qw /say/;
+
+# begin block logic implemented before the following use statements
+# n.b use statements also use BEGIN BLOCKS behind the scenes, make
+# sure our begin block is before their begin block
+BEGIN {
+    push @INC, 'C:\Users\toepo\local\git-weebucket\perl-hello';
+}
+
+use Dog;
 
 # debugging
 use Data::Dumper;
@@ -25,7 +36,7 @@ say $str2;
 say $str_literal;
 say "";
 
-# USER INPUT
+# USER INPUT. The diamond variable <> returns a line from current input source
 # readline (<>) user input continuously from terminal. print it out ($_) in upper case (uc)
 # while (<>) {.
 #     say uc "$_";
@@ -306,6 +317,7 @@ say Dumper (%dic3);
 say "";
 
 # dump references to screen, use these to see how we can create references ourselves
+# using dumper also makes it more readible
 say Dumper ( \$num2 );
 say Dumper ( \@arr15 );
 say Dumper ( \%dic3 );
@@ -402,7 +414,7 @@ say "";
 sub slurpy_catchall ( $name, @slurp ) {
     say $name;
 
-    # dumper print the reference declaration
+    # dumper print the reference declaration (more readible)
     say Dumper \@slurp;
 }
 slurpy_catchall( "John", 1, 2, { f => "tea", g => "coffee", h => "sprite" } );
@@ -414,7 +426,7 @@ slurpy_catchall( "John", 1, 2, { f => "tea", g => "coffee", h => "sprite" } );
 sub pop_clogs {
     warn qq @warn: call an ambulance, I'm ill@;
 
-    # die returns 0 (falsey)
+    # die returns 0 (falsey) & throws exception with a message
     die qq ^I told you I was ill^;
 }
 eval {
@@ -425,7 +437,15 @@ eval {
     my $err = $@ || "that didn't end well";
     say qq{error: $err};
 };
-say($!);
+
+# will give message: "Died at hello.pl line 429"
+# eval {
+#     chdir "c:/users/hansolo/fakedir/";
+# } or die;
+# will give message: "No such file or directory at hello.pl line 434"
+# eval {
+#     chdir "c:/users/hansolo/fakedir/";
+# } or die($!);
 
 # TRUTHY / FALSEY
 my $test_val = 1;
@@ -576,6 +596,19 @@ my $r = qr *^(\w{2})*;
 foreach (@a) {
     say "$_ $1" unless $_ !~ $r;
 }
+my @captures1 = "";
+my @captures2 = "";
+foreach my $item (@a) {
+    my ( $cap1, $cap2 ) = $item =~ /(\w)(\w)/;
+
+    # capture using implicit in-built captures ($1, $2, $3, etc)
+    push( @captures1, ("$1$2 ") );
+
+    # capture into my variables
+    push( @captures2, ("$cap1$cap2 ") );
+}
+say @captures1;
+say @captures2;
 say "";
 
 # qr doesn't like full substitution regex, so do it piece by piece using array. minimalist TIMTOWTDI perl code
@@ -595,9 +628,11 @@ my $cmd = qx(dir);
 say $cmd;
 
 # dumping of normal collection and dumping of a reference to a collection
-say ("dumping normal hash");
-my %hashy = ( "a" => "hey", b => "boy", 'c' => { d => "superstar", e => "dj" } );
+say("dumping normal hash");
+my %hashy =
+  ( "a" => "hey", b => "boy", 'c' => { d => "superstar", e => "dj" } );
 say Dumper(%hashy);
+
 # dumper shows six variables:
 # $VAR1 ='a';
 # $VAR2 = 'hey';
@@ -610,8 +645,9 @@ say Dumper(%hashy);
 # };
 
 # dumper shows one variable (the reference / pointer):
-say ("dumping reference to the hash");
+say("dumping reference to the hash");
 say Dumper( \%hashy );
+
 # $VAR1 = {
 #           'a' => 'hey',
 #           'b' => 'boy',
@@ -622,16 +658,17 @@ say Dumper( \%hashy );
 #         };
 
 # use the single variable hash syntax from dumper to construct a hash pointer
-my $emergency_addr= {
+my $emergency_addr = {
     w => "fireman",
     x => "policeman",
     y => "doctor",
 };
-say ("hand-constructing emergency hash with an address scalar (ref / pointer)");
-say ($emergency_addr);
+say("hand-constructing emergency hash with an address scalar (ref / pointer)");
+say($emergency_addr);
 hash_doggify($emergency_addr);
-say ("dumping doggified emergency hash address scalar");
+say("dumping doggified emergency hash address scalar");
 say Dumper ($emergency_addr);
+
 sub hash_doggify {
     my $h_ptr = shift @_;
     $h_ptr->{"w"} .= " woof woof";
@@ -639,10 +676,102 @@ sub hash_doggify {
     $h_ptr->{'y'} .= " grrrrr";
     return $h_ptr;
 }
-say ("dumping doggified emergency hash address via full dereferencing ->%*");
-say Dumper ($emergency_addr->%*);
+say("dumping doggified emergency hash address via full dereferencing ->%*");
+say Dumper ( $emergency_addr->%* );
 
-# final expression
-1;
+# built in functions: map
+my @list1 = qw / cat dog rat /;
+my @list2 = map {
+    my $element = uc $_;
+    $element .= "_new";
 
-### 2h29m done (built in functions next)
+    # last expression returned
+    $element
+} @list1;
+
+# note map doesn't change the items in place (copies all elements, adapts, new list)
+say join " ", @list1;
+say join " ", @list2;
+
+# built in functions: grep
+my @list3 = grep { $_ eq "cat" || /\Bog\b/ } @list1;
+say join " ", @list3;
+say "";
+
+# built in functions: split and join
+my $text_line = "this is my long line of text";
+
+say $text_line;
+my @split_arr = split( " ", $text_line );
+map { say } @split_arr;
+my @rejoined = join( "--", @split_arr );
+say @rejoined;
+
+say $text_line;
+@split_arr = split( "", $text_line );
+map { say } @split_arr;
+@rejoined = join( "--", @split_arr );
+say @rejoined;
+
+say $text_line;
+@split_arr = split( m/o/, $text_line );
+map { say } @split_arr;
+@rejoined = join( "--", @split_arr );
+say @rejoined;
+
+# built in functions: uc and lc (upper and lower case)
+# create a list of words from $text_line, return first letter capitalised from each word via map
+my @new = map { (/(^.)/); uc $1 } split( " ", $text_line );
+say join " ", @new;
+say "";
+
+my @text_list = qw ? DINO HIPPO CROC KOMODO ?;
+say @text_list;
+my @text_list_title = map { lcfirst } @text_list;
+say @text_list_title;
+say "";
+
+# built in functions: length, int, rand, sleep, substr, time
+my $wee_text = "hey";
+say length $wee_text;
+say scalar(@text_list);
+say int( rand(10) );
+say "sleeping...";
+sleep 1;
+say "... awake now";
+
+# start index 1, 2 chars
+say substr( $wee_text, 1, 2 );
+
+# epoch time in seconds (usually 19700101)
+say time;
+
+# special variables
+say "process id: $$";
+say "version of perl running this script: $]";
+print "argument list passed to script: " . Dumper( \@ARGV );
+print "include paths (absolute) for modules: " . Dumper( \@INC );
+print "environment variables and their values: " . Dumper( \%ENV );
+
+# read a line at a time from standard input STDIN via diamond variable
+# while (<STDIN>) {say $_}
+say "current script full path is: " . __FILE__;
+say "number of lines in current script is: " . __LINE__;
+say "number of lines in current script is: " . __LINE__;
+say "current package: " . __PACKAGE__;
+say "";
+
+# OOP
+# perl's out of the box OOP can be improved upon using the Mouse module.
+
+my $Doggy = Dog->new( "labrador", 50, 70, "golden", "fido" );
+say $Doggy->get_breed();
+say $Doggy->get_height();
+$Doggy->set_breed("dalmation");
+$Doggy->set_height(120);
+say $Doggy->get_breed();
+say $Doggy->get_height();
+
+$Doggy->print_info();
+
+### 3h03m done (use vs require next)

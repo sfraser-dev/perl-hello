@@ -3,4 +3,4 @@ use strict;
 
 our $globby = 101;
 
-1;
+1
