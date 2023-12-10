@@ -90,7 +90,7 @@ sub print_info {
 
 sub DESTROY {
     # will get called by perl's garbage collector (~destructor)
-    say "bye bye everyone";
+    say "Dog.pm DESTROY: bye bye everyone";
 }
 
 1

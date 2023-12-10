@@ -18,6 +18,19 @@ BEGIN {
 }
 use Dog;
 
+# OOP
+# perl's out of the box OOP can be improved upon using the Mouse module.
+# -> invokes classname as hidden first argument
+my $Doggy = Dog->new( "labrador", 50, 70, "golden", "fido" );
+say $Doggy->get_breed();
+say $Doggy->get_height();
+$Doggy->set_breed("dalmation");
+$Doggy->set_height(120);
+say $Doggy->get_breed();
+say $Doggy->get_height();
+$Doggy->print_info();
+say "";
+
 # AddModule has used Exporter's import() and pushed to @EXPORT
 use AddModule;
 say "adding numbers using sub from AddModule: " . add_nums( 3, 2 );
@@ -25,7 +38,9 @@ say "adding numbers using sub from AddModule: " . add_nums( 3, 2 );
 # MultModule hasn't used Exporter's import() nor pushed to @EXPORT so
 # use :: to represent full pathname
 use MultModule;
-say "multiply numbers using sub from MultModule: " .  MultModule::mult_nums(3,2);
+say "multiply numbers using sub from MultModule: "
+  . MultModule::mult_nums( 3, 2 );
+say "";
 
 # behind the scenes, this'll expand to:
 # BEGIN {require 'Dog.pm'; Data::Dumper->import(); }
@@ -34,16 +49,20 @@ say "multiply numbers using sub from MultModule: " .  MultModule::mult_nums(3,2)
 
 # meta::cpan
 # cpanm is better than cpan (can install cpanm using cpan!)
-# install via: $> cpanm JSON::XS 
+# install via: $> cpanm JSON::XS
 use JSON::XS;
-# encode perl hash as json
-my $perl_hash_ref = {a=>2, b=>200,};
-my $json_text = encode_json ($perl_hash_ref);
-say $json_text;
-my $perl_has_ref = decode_json($json_text) ;
-say Dumper($perl_hash_ref);
 
-# debugging
+# encode perl hash as json
+say "JSON moduleconvert perl hash and json:";
+my $perl_hash_ref = { a => 2, b => 200, };
+my $json_text     = encode_json($perl_hash_ref);
+say $json_text;
+my $perl_has_ref = decode_json($json_text);
+say Dumper($perl_hash_ref);
+say "";
+
+# dumper great for debugging and seeing how to
+# manually create array and hash REFERENCES
 use Data::Dumper;
 
 # signatures for subroutines (became non-experimental in perl 5.36)
@@ -51,6 +70,50 @@ use feature qw <signatures>;
 
 # use is executed at compile time (via BEGIN blocks) and require is executed at run time
 # require can be implemented conditionally where use cannot be implemented conditionally
+
+# file handling with Path::Tiny module
+# install: cpanm Path::Tiny;
+# has many file/folder subs for read/write, permissions
+# copy, move, working with different paths, etc
+use Path::Tiny;
+my $Path = path("./file-test1.txt");
+
+# spew to file (Path::Tiny)
+my @spewcontent = ( "line1\n", "line2\n", "line3\n", );
+$Path->spew(@spewcontent);
+
+# slurp from file into a sinle string (Path::Tiny)
+my $slurpcontent = $Path->slurp;
+say "Path slurp into scalar from file-test1: ";
+say $slurpcontent;
+
+# lines read from file one at a time (Path::Tiny)
+my @linescontent = $Path->lines;
+say "Path lines into array from file-test1: ";
+map { print $_ } @linescontent;
+say "";
+
+# file handling (out of the box)
+# > write, >> append, < read
+open( my $FOUT, ">", "file-test2.txt" )
+  or die "could not open file for writing: $!";
+print $FOUT "hello there my friend";
+print $FOUT "hope all is well with you";
+print $FOUT "i'm doing some perl for fun";
+close $FOUT;
+
+# perl out of the box file io
+# <> diamond operator reads a lines at a time
+my @lines = ();
+open( my $FIN, "<", "file-test2.txt" )
+  or die "could not open file for reading: $!";
+while ( defined( my $line = <$FIN> ) ) {
+    chomp $line;
+    push( @lines, $line );
+}
+say 'reading from file-test2 one line at a time via <$FIN> and chomping:';
+say join "\n", @lines;
+say "";
 
 # STRING BASICS
 # strings: qq{""} are interpolated, q{''} are literals
@@ -789,18 +852,20 @@ say "number of lines in current script is: " . __LINE__;
 say "current package: " . __PACKAGE__;
 say "";
 
-# OOP
-# perl's out of the box OOP can be improved upon using the Mouse module.
+# running system commands:
+# using qx and `backticks` (these are equivalent). return is STDOUT. command
+# output not shown in STDOUT, it's returned, can be assigned to a perl variable.
+for ( 1 .. 2 ) {
+    my $stdout_echo = qx/echo $_......................./;
+    say $stdout_echo;
+    my $stdout_dir = `ls *.pm`;
+    say $stdout_dir;
+}
 
-# -> invokes classname as hidden first argument
-my $Doggy = Dog->new( "labrador", 50, 70, "golden", "fido" );
-say $Doggy->get_breed();
-say $Doggy->get_height();
-$Doggy->set_breed("dalmation");
-$Doggy->set_height(120);
-say $Doggy->get_breed();
-say $Doggy->get_height();
-
-$Doggy->print_info();
-
-### 3h19m done (use vs require next)
+# running system commands:
+# system command: return is exit status from command.
+# command output is shown in STDOUT.
+my $exit_status = system( "gfind", ".", "-type", "f", "-iregex", ".+\.pl" );
+say "exit status: " . $exit_status;
+# running system commands: exec (executes command then quits script!)
+say "";

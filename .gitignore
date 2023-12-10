@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/perl
 # Edit at https://www.toptal.com/developers/gitignore?templates=perl
 
+# Me
+file-test*
+
 ### Perl ###
 !Build/
 .last_cover_stats
