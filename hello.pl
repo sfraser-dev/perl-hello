@@ -11,18 +11,46 @@ use feature qw /say/;
 
 # begin block logic implemented before the following use statements
 # n.b use statements also use BEGIN BLOCKS behind the scenes, make
-# sure our begin block is before their begin block
+# sure our begin block is before their begin block by pushing our
+# path into the include array / list
 BEGIN {
     push @INC, 'C:\Users\toepo\local\git-weebucket\perl-hello';
 }
-
 use Dog;
+
+# AddModule has used Exporter's import() and pushed to @EXPORT
+use AddModule;
+say "adding numbers using sub from AddModule: " . add_nums( 3, 2 );
+
+# MultModule hasn't used Exporter's import() nor pushed to @EXPORT so
+# use :: to represent full pathname
+use MultModule;
+say "multiply numbers using sub from MultModule: " .  MultModule::mult_nums(3,2);
+
+# behind the scenes, this'll expand to:
+# BEGIN {require 'Dog.pm'; Data::Dumper->import(); }
+# by default Data::Dumper->import() will import all subs
+# use can import modules, not perl files (require perl files)
+
+# meta::cpan
+# cpanm is better than cpan (can install cpanm using cpan!)
+# install via: $> cpanm JSON::XS 
+use JSON::XS;
+# encode perl hash as json
+my $perl_hash_ref = {a=>2, b=>200,};
+my $json_text = encode_json ($perl_hash_ref);
+say $json_text;
+my $perl_has_ref = decode_json($json_text) ;
+say Dumper($perl_hash_ref);
 
 # debugging
 use Data::Dumper;
 
 # signatures for subroutines (became non-experimental in perl 5.36)
 use feature qw <signatures>;
+
+# use is executed at compile time (via BEGIN blocks) and require is executed at run time
+# require can be implemented conditionally where use cannot be implemented conditionally
 
 # STRING BASICS
 # strings: qq{""} are interpolated, q{''} are literals
@@ -764,6 +792,7 @@ say "";
 # OOP
 # perl's out of the box OOP can be improved upon using the Mouse module.
 
+# -> invokes classname as hidden first argument
 my $Doggy = Dog->new( "labrador", 50, 70, "golden", "fido" );
 say $Doggy->get_breed();
 say $Doggy->get_height();
@@ -774,4 +803,4 @@ say $Doggy->get_height();
 
 $Doggy->print_info();
 
-### 3h03m done (use vs require next)
+### 3h19m done (use vs require next)
