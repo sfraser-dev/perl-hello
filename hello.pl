@@ -1,5 +1,9 @@
 # review of FCC Perl Programming Course 4h10m given by Youtube user @PerlTechStack (Valters Krupskis)
 
+# need to install the following modules
+# cpanm Path::Tiny
+# cpanm JSON::XS
+
 # if straberry perl installed (and in path), don't include the shebang (#!/usr/local/bin/perl -w)
 # Surpress 5.8.0 warning: Powershell as admin: [Environment]::SetEnvironmentVariable("LC_ALL", "C")
 
@@ -15,6 +19,7 @@ use feature qw /say/;
 # path into the include array / list
 BEGIN {
     push @INC, 'C:\Users\toepo\local\git-weebucket\perl-hello';
+    push @INC, './'
 }
 use Dog;
 
@@ -855,17 +860,23 @@ say "";
 # running system commands:
 # using qx and `backticks` (these are equivalent). return is STDOUT. command
 # output not shown in STDOUT, it's returned, can be assigned to a perl variable.
-for ( 1 .. 2 ) {
-    my $stdout_echo = qx/echo $_......................./;
-    say $stdout_echo;
+for ( 0 .. 2 ) {
+    if ($_ == 0) {
+        my $stdout_echo = qx/echo $_......................./;
+        say $stdout_echo;
+        next;
+    }
     my $stdout_dir = `ls *.pm`;
     say $stdout_dir;
+    my $stdout_echo = qx/echo $_......................./;
+    say $stdout_echo;
 }
 
 # running system commands:
 # system command: return is exit status from command.
 # command output is shown in STDOUT.
-my $exit_status = system( "gfind", ".", "-type", "f", "-iregex", ".+\.pl" );
+# my $exit_status = system( "gfind", ".", "-type", "f", "-iregex", ".+\.pl" );
+my $exit_status = system( "ls *.pl" );
 say "exit status: " . $exit_status;
 # running system commands: exec (executes command then quits script!)
 say "";
