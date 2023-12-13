@@ -499,7 +499,7 @@ pushy( \@arr16 );
 say join " ", @arr16;
 say "";
 
-# sub with parameters. set to default of undefined
+# sub with parameters (experimental). set to default of undefined
 sub my_params ( $name = "Default Name" ) {
     say "hello " . $name;
 }
@@ -647,7 +647,8 @@ say "";
 my $test_text = "This is the first sentence. Red lorry. There are 2 dogs.";
 
 # capture one (match) by if statement
-my $pattern_capture_match1_a = $1 if ( $test_text =~ m/(\sRed\s\w{5})/ );
+my $pattern_capture_match1_a;
+$pattern_capture_match1_a = $1 if ( $test_text =~ m/(\sRed\s\w{5})/ );
 say( "pattern_capture_match1_a = " . $pattern_capture_match1_a );
 
 # capture one (match) by destructuring / unpacking
