@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=perl
 
 # Me
-file-test*
+file-test*.txt
 
 ### Perl ###
 !Build/
