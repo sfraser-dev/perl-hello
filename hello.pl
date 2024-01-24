@@ -2,7 +2,7 @@
 
 # review of FCC Perl Programming Course 4h10m given by Youtube user @PerlTechStack (Valters Krupskis)
 
-# need to install the following modules
+# need to install the following modules (see Perl-Regex.md notes):
 # cpanm Path::Tiny
 # cpanm JSON::XS
 
