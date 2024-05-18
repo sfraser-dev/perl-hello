@@ -6,7 +6,7 @@
 # cpanm Path::Tiny
 # cpanm JSON::XS
 
-# if straberry perl installed (and in path), don't include the shebang (#!/usr/local/bin/perl -w)
+# if strawberry perl installed (and in path), don't include the shebang (#!/usr/local/bin/perl -w)
 # Surpress 5.8.0 warning: Powershell as admin: [Environment]::SetEnvironmentVariable("LC_ALL", "C")
 
 # powershell warning fix: $env:LC_ALL='C'
